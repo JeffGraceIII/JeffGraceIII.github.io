@@ -7,18 +7,11 @@
     "text": "About this blog"
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/who_could_win_the_nba_playoffs/index.html",
+    "href": "posts/who_could_win_the_nba_playoffs/index.html",
+    "title": "Who has the best chance to win the NBA Playoffs?",
     "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+    "text": "Get ready, basketball fans, because one of the most thrilling times of the year is almost here: NBA Playoffs! As the regular season comes to an end, the anticipation and excitement ramp up as teams across the league gear up for the ultimate showdown.\nIn the upcoming NBA playoffs, wanted to figure out who has the best possible chance to win.\nOne team is standing out in the predictions, the Celtics. With their new lineup and recent performances, they’re being known as the ones to beat. However, in the ever-unpredictable world of basketball, nothing is set in stone. Other teams are lurking in the shadows, ready to seize their chance at glory.\nSo, as we dive into the upcoming playoffs, brace yourselves for a roller coaster ride of emotions, surprises, and intense battles on the court. Will the Celtics live up to the hype, or will an underdog rise to the occasion? Let the games begin!\n2023-24 NBA Reference- is what was used for data and it highlights many different stats for other seasons along with the 2023-24 NBA Season. Advanced Stats was the specific stat that was looked at for the data. It shows a variety of things along with the four offensive and defensive factors.\nWhich teams have the highest offensive and defensive rating per 100 possessions heading into the NBA Playoffs is the first thing we will look at.\n\n\nCode\nlibrary(tidyverse )\nlibrary(ggalt)\nlibrary(ggtext)\nlibrary(ggbeeswarm)\nlibrary(ggrepel)\nlibrary(patchwork)\n\nBasketball &lt;- read_csv(\"NBA.csv\")\n\nggplot() + \n  geom_dumbbell(\n    data=Basketball, \n    aes(y=reorder(Team, ORtg), x=ORtg, xend=DRtg),\n    size = 2,\n    colour = \"lightblue\",\n    colour_x = \"orange\",\n    colour_xend = \"red\") +\n  labs(\n    title=\"Offensive Rating vs Defensive Rating in the NBA\", \n    subtitle = \"If &lt;span style = 'color:orange;'&gt;Offenseive Rating&lt;/span&gt; are on the right, that's good. If &lt;span style = 'color:red;'&gt;Defensive Rating&lt;/span&gt; are on the right, that's bad.\",\n    x=\"Offensive rating per 100 possesions\", \n    y=\"Defensive rating per 100 possesions\", \n    caption=\"Source: 2023-24 NBA Season Summary  | Jeff Grace III\"\n    ) +\n  theme_minimal() + \n  theme(\n    plot.title = element_text(size = 20, face = \"bold\"),\n    axis.title = element_text(size = 8), \n    plot.subtitle = element_textbox_simple(size=10), \n    panel.grid.minor = element_blank(),\n    plot.title.position = \"plot\"\n    ) \n\n\n\n\n\n\n\n\n\nThe Boston Celtics stand out among both Eastern and Western Conference teams, boasting one of the highest defensive ratings and the best offensive rating. Meanwhile, the Indiana Pacers, ranked in the middle defensively, showcased their skill as the second-best offensive team in the east, proving their effectiveness on both ends of the court. The possibility of these two strong teams facing up in the Eastern Conference playoffs is becoming more and more exciting as the postseason approaches.\nCould this potential clash deliver a showdown of offensive firepower versus defensive mastery that basketball fans have been waiting for?\n\n\nCode\nbee1 &lt;- ggplot() + \n  geom_beeswarm(data=Basketball, aes(x=`OeFG%`, y=Conference),color=\"orange\") + \n  geom_text_repel(data=Basketball,aes(x=`OeFG%`, y=Conference, label=Team))+\n  labs(\n    x= \"Offensive effective field goal percentage\",\n    y= \"Teams Conference\",\n  ) + \n  theme_minimal()\n  \nbee2 &lt;- ggplot() + \n geom_beeswarm(data=Basketball, aes(x=`DeFG%`, y=Conference),color=\"red\") + \n  geom_text_repel(data=Basketball,aes(x=`DeFG%`, y=Conference, label=Team))+\n  labs(\n    x= \"Defensive effective field goal perecentage\",\n    y= \"Teams Conference\",\n  ) + \n  theme_minimal()\n  \nbee1 / bee2 +\n  plot_annotation(\n    title = \"Offensive effective field goal percentage vs Defensive effective field goal percentage\",\n    subtitle = \"The Boston Celtics offense and defense, on a per play basis, were the top in NBA.\",\n    caption = \"Source: 2023-24 NBA Season Summary | Jeff Grace III\"\n  ) &\n  theme(\n    plot.title = element_text(size = 12, face = \"bold\"),\n    axis.title = element_text(size = 8), \n    plot.subtitle = element_text(size=10), \n    panel.grid.minor = element_blank(),\n    plot.title.position = \"plot\"\n    ) \n\n\n\n\n\n\n\n\n\nThe Celtics offensive talent remain impressive, showcasing an effective field goal percentage that stands tall across both Eastern and Western Conferences. Yet, their defensive performance paints a different picture, boasting one of the Eastern Conference’s finest defensive effective field goal percentages.\nCan their offensive talent, however, make up for defensive shortcomings throughout the playoffs?\n\n\nCode\nnewbasketball &lt;- Basketball |&gt; \n  filter(\n   Pace &gt; 97.3 &\n    W &gt; 25\n  )\n\nggplot() + \n  geom_point(data=Basketball, aes(x=W, y=Pace), color=\"red\") +\n  geom_point(data=newbasketball, aes(x=W, y=Pace), color=\"orange\") + \n  geom_hline(yintercept = 98.58333, color=\"lightblue\") + \n  geom_vline(xintercept = 36.33333, color=\"lightblue\") + \n  geom_text(aes(x=50, y=101.8, label=\"Playing fast, winning games\"), color=\"darkgrey\") + \n  geom_text_repel(data=newbasketball, aes(x=W, y=Pace, label=Team))  + \n  labs(\n    x=\"Wins\", \n    y=\"Pace per 100 possesions\", \n    title=\"Pace doesn't determine the win column\", \n    subtitle=\"The Oklahoma City Thunder's pace were among the top in the NBA.\", \n    caption=\"Source: 2023-24 NBA Season Summary | Jeff Grace III\"\n    ) +\n  theme_minimal() + \n  theme(\n    plot.title = element_text(size = 20, face = \"bold\"),\n    axis.title = element_text(size = 8), \n    plot.subtitle = element_text(size=10), \n    panel.grid.minor = element_blank(),\n    plot.title.position = \"plot\"\n    ) \n\n\n\n\n\n\n\n\n\nPace influences the flow and tempo of a game, but it’s impact on playoff results is varied. While a faster pace may favor teams with explosive offenses like the Thunder, allowing them to capitalize on transition opportunities and catch opponents off guard, it also presents risks. Speeding up the game can lead to increased turnovers and fatigue, which could benefit opponents who thrive in a more controlled, half-court style of play.\nThe Oklahoma City Thunder’s ability to control the game’s pace may be crucial in their hopes finishing out the regular season and heading into playoffs.\nSo, does pace determine who wins or loses in the playoffs?"
   },
   {
     "objectID": "posts/introduction/index.html",
@@ -28,10 +21,24 @@
     "text": "Hello, my name is Jeff Grace III and I am a junior at the University of Nebraska Lincoln and have a major in Sports media & Communications wuth a minor in Child, youth, and family studies."
   },
   {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Latest posts",
     "section": "",
-    "text": "Introduction\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 1, 2024\n\n\nJeff Grace III\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApr 1, 2024\n\n\nJeff Grace III\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nMar 29, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Who has the best chance to win the NBA Playoffs?\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApr 14, 2024\n\n\nJeff Grace III\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 1, 2024\n\n\nJeff Grace III\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApr 1, 2024\n\n\nJeff Grace III\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nMar 29, 2024\n\n\nJeff Grace III\n\n\n\n\n\n\nNo matching items"
   }
 ]
